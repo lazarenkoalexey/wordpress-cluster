@@ -9,7 +9,7 @@ description:
   text: WordPress Cluster Kit with highly available Load Balancer and Shared Storage with GlusterFS, database clustering, and scaling mode to create an optimal environment for highly-loaded projects. The package provides integrated autoscaling and high availability for development and production environments. Clustered topology ensures effective handling of heavy workload.
   short: WordPress Cluster with built-in kit v2 for choosing optimal servers, database clustering type, scaling mode and a set of advanced features for highly-loaded projects
 logo: /images/wp-cluster-kit.svg
-baseUrl: https://raw.githubusercontent.com/jelastic-jps/wordpress-cluster/v2.0.0
+baseUrl: https://raw.githubusercontent.com/lazarenkoalexey/wordpress-cluster/JE-55952
 
 onBeforeInit: /scripts/settings.js?_r=${fn.random}
 onBeforeInstall: /scripts/beforeinstall.js?_r=${fn.random}
@@ -272,6 +272,12 @@ onInstall:
  
   - if ('${settings.mu-addon:false}' == 'true'): configure-MU
 
+  - cmd[cp]: 
+      commands: |-
+        echo '${nodes.cp.master.address} master' >> /etc/hosts
+        curl -fsSL '${baseUrl}/configs/cp/nginx/le.conf' -o /etc/nginx/le.conf
+        jem service restart
+      user: root
   - if (('${settings.le-addon:false}' == 'true') || ('${settings.cdn-addon:false}' == 'true')):
     - script: |
         var actions = [];
@@ -285,6 +291,7 @@ onInstall:
               fallbackToX1: "true",
               webroot: true,
               webrootPath: "/var/www/webroot/ROOT"
+              
             }
           });
         if ('${settings.cdn-addon:false}' == 'true')
@@ -338,7 +345,7 @@ addons:
 actions:
 
   setup-LE-domain:
-    - cmd[${nodes.bl.master.id}]: source /opt/letsencrypt/settings && echo $domain
+    - cmd[${nodes.cp.master.id}]: source /opt/letsencrypt/settings && echo $domain
     - install: ${globals.PATH}/scripts/setupDomain.jps
       settings:
         domain: https://${response.out}
@@ -385,7 +392,7 @@ actions:
         user: root
         
   addHSTS:
-    - cmd[${nodes.bl.master.id}]: source /opt/letsencrypt/settings && echo $test
+    - cmd[${nodes.cp.master.id}]: source /opt/letsencrypt/settings && echo $test
     - if ('${response.out}' == 'false'):
       - if (/nginxphp/.test("${nodes.cp.nodeType}")):
           cmd[${this.nodeId}]: |-
