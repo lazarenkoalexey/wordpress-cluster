@@ -278,11 +278,13 @@ onInstall:
         if ('${settings.le-addon:false}' == 'true')
           actions.push({
             jps: "https://github.com/jelastic-jps/lets-encrypt/blob/master/manifest.jps?_r=${fn.random}?_r=${fn.random}",
-            nodeGroup: "bl",
+            nodeGroup: "cp",
             skipEmail: "true",
             settings: {
               customDomains: "${globals.DOMAIN}",
-              fallbackToX1: "true"
+              fallbackToX1: "true",
+              webroot: true,
+              webrootPath: "/var/www/webroot/ROOT"
             }
           });
         if ('${settings.cdn-addon:false}' == 'true')
