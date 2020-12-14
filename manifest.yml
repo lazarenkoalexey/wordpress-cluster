@@ -149,11 +149,11 @@ onAfterScaleOut[nodeGroup:cp]:
     - log: App Servers Setup
     - setupCP:
         nodeId: ${@i.id}
-    - cmd[cp]: 
-      commands: |-
-        echo '${nodes.cp.master.address} master' >> /etc/hosts
-        jem service restart
-      user: root
+  - cmd[${@i.id}]: 
+    commands: |-
+      grep -q master /etc/hosts echo '${nodes.cp.master.address} master' >> /etc/hosts
+      jem service restart
+    user: root
  
 onBeforeAddNode[sqldb]:
   stopEvent:
