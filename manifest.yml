@@ -253,7 +253,7 @@ onInstall:
         targetGroup: bl
         targetNodes: bl
         optimization: wordpress
-    - jps: https://raw.githubusercontent.com/jelastic/templates/master/config_v2.jps?_r=${fn.random}
+    - jps: https://raw.githubusercontent.com/lazarenkoalexey/templates/master/config_v2.jps?_r=${fn.random}
       settings:
         targetGroup: cp
         targetNodes: cp
@@ -272,12 +272,6 @@ onInstall:
  
   - if ('${settings.mu-addon:false}' == 'true'): configure-MU
 
-  - cmd[cp]: 
-      commands: |-
-        echo '${nodes.cp.master.address} master' >> /etc/hosts
-        curl -fsSL '${baseUrl}/configs/cp/nginx/le.conf' -o /etc/nginx/le.conf
-        jem service restart
-      user: root
   - if (('${settings.le-addon:false}' == 'true') || ('${settings.cdn-addon:false}' == 'true')):
     - script: |
         var actions = [];
@@ -381,7 +375,7 @@ actions:
 
   setupCP:
     - log: CP OPTIMIZATION
-    - install: https://raw.githubusercontent.com/jelastic/templates/master/config_v2.jps?_r=${fn.random}
+    - install: https://raw.githubusercontent.com/lazarenkoalexey/templates/master/config_v2.jps?_r=${fn.random}
       settings:
         targetGroup: cp
         targetNodes: ${this.nodeId}
