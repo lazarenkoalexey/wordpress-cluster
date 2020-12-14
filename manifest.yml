@@ -280,7 +280,6 @@ onInstall:
   - cmd[cp]: 
       commands: |-
         echo '${nodes.cp.master.address} master' >> /etc/hosts
-        #curl -fsSL '${baseUrl}/configs/cp/nginx/le.conf' -o /etc/nginx/le.conf
         jem service restart
       user: root
   - if (('${settings.le-addon:false}' == 'true') || ('${settings.cdn-addon:false}' == 'true')):
