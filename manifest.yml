@@ -274,6 +274,9 @@ onInstall:
       user: root
 
   - install-wordpress
+  
+  - if (/litespeed/.test("${nodes.cp.nodeType}")):
+    - cmd [${nodes.cp.master.id}]: echo 'RewriteCond %{REQUEST_URI} .well-known/acme-challenge\nRewriteRule (.*) ${nodes.cp.master.url}/$1 [R,L]' >> /var/www/webroot/ROOT/.htaccess
  
   - if ('${settings.mu-addon:false}' == 'true'): configure-MU
 
