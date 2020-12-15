@@ -149,6 +149,8 @@ onAfterScaleOut[nodeGroup:cp]:
     - log: App Servers Setup
     - setupCP:
         nodeId: ${@i.id}
+  - if (/litespeed/.test("${nodes.cp.nodeType}")):
+    - cmd [${nodes.cp.master.id}]: echo 'RewriteCond %{REQUEST_URI} .well-known/acme-challenge\nRewriteRule (.*) ${nodes.cp.master.url}/$1 [R,L]' >> /var/www/webroot/ROOT/.htaccess
   - cmd[${@i.id}]: 
     commands: |-
       grep -q master /etc/hosts echo '${nodes.cp.master.address} master' >> /etc/hosts
